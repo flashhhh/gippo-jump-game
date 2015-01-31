@@ -1,6 +1,7 @@
 module.exports =
   positionToBody: (bodyA, bodyB, correction = 0.1) ->
-    # correction: When bodies collide, they intersect a bit. We need to ignore it.
+    # correction: When bodies collide,
+    # they intersect a bit. We need to ignore it.
     
     bodyATopLeft =
       x: bodyA.state.pos.x - bodyA.width / 2
@@ -26,7 +27,7 @@ module.exports =
     verticalPosition =
       if bodyABottomRight.y - correction < bodyBTopLeft.y then 'over'
       else if bodyATopLeft.y + correction > bodyBBottomRight.y then 'under'
-      else 'inside'  
+      else 'inside'
 
     x: horisontalPosition
     y: verticalPosition

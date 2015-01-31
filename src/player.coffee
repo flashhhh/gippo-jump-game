@@ -1,14 +1,13 @@
 util = require './util.coffee'
+KEYMAP = require './keycodes'
 
 MASS = 0.01
-RESTITUTION = 0
+RESTITUTION = 1
 COF = 1
 JUMPFORCE = 1
 WIDTH = 30
 HEIGHT = 50
 MOVESPEED = 0.3
-
-KEYMAP = require './keycodes'
 
 CONTROLS =
   left: [KEYMAP.left_arrow, KEYMAP.a]
@@ -24,12 +23,14 @@ canJump = false
 canMove = true
 
 jump = (modifier = 1) ->
-  body.applyForce y: -1 * (JUMPFORCE * modifier) / (100000 * MASS) 
+  body.applyForce y: -1 * (JUMPFORCE * modifier) / (100000 * MASS)
 
 module.exports =
   setWorld: (_world) ->
     world = _world
-    this
+    world.$.player = null
+    @
+    
   spawn: (x, y) ->
     if body
       world.remove body
@@ -42,7 +43,7 @@ module.exports =
     body.restitution = RESTITUTION
     body.cof = COF
     body.mass = MASS
-    body.labels = ['player', 'moveable']
+    body.labels = ['player']
     body.collide = (otherBody) ->
       position = util.positionToBody body, otherBody
       if not canJump and
@@ -50,8 +51,6 @@ module.exports =
       position.y is 'over' and
       position.x is 'inside'
         canJump = true
-      if 'platform' in otherBody.labels and position.x isnt 'inside'
-        movements = Physics.util.filter movements, (value) -> value not in ['left', 'right']
     world.add body
     world.$.player = body
 
@@ -72,17 +71,21 @@ module.exports =
           canJump = false
         
       document.addEventListener 'keydown', (event) ->
-          console.log event
-          return if event.repeat
-          if event.keyCode in CONTROLS.left and 'left' not in movements then movements.push 'left'
-          if event.keyCode in CONTROLS.right and 'right' not in movements then movements.push 'right'
-          if event.keyCode in CONTROLS.up and 'up' not in movements then movements.push 'up'
+        if event.keyCode in CONTROLS.left and 'left' not in movements
+          movements.push 'left'
+        if event.keyCode in CONTROLS.right and 'right' not in movements
+          movements.push 'right'
+        if event.keyCode in CONTROLS.up and 'up' not in movements
+          movements.push 'up'
 
       document.addEventListener 'keyup', (event) ->
-        if event.keyCode in CONTROLS.left then movements = Physics.util.filter movements, (value) ->
-          value isnt 'left'
-        if event.keyCode in CONTROLS.right then movements = Physics.util.filter movements, (value) ->
-          value isnt 'right'
-        if event.keyCode in CONTROLS.up then movements = Physics.util.filter movements, (value) ->
-          value isnt 'up'
+        if event.keyCode in CONTROLS.left
+          movements = Physics.util.filter movements, (value) ->
+            value isnt 'left'
+        if event.keyCode in CONTROLS.right
+          movements = Physics.util.filter movements, (value) ->
+            value isnt 'right'
+        if event.keyCode in CONTROLS.up
+          movements = Physics.util.filter movements, (value) ->
+            value isnt 'up'
             

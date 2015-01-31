@@ -1,10 +1,13 @@
 RESTITUTION = 0
-COF = 1
+COF = 0
 
 world = null
 
 module.exports =
-  setWorld: (_world) -> world = _world
+  setWorld: (_world) ->
+    world = _world
+    world.$.platforms = []
+    @
   spawn: (x, y, width, height) ->
     body = Physics.body 'rectangle',
       x: x

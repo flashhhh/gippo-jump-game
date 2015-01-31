@@ -15,6 +15,12 @@ module.exports = (grunt) ->
           watch: true
           keepAlive: true
           transform: ['coffeeify']
+    coffeelint:
+      app: 
+        files:
+          src: ['src/*.coffee']
+        options:
+          force: true
     concurrent:
       start:
         tasks: ['http-server:start', 'browserify']
@@ -24,5 +30,6 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-concurrent'
   grunt.loadNpmTasks 'grunt-http-server'
   grunt.loadNpmTasks 'grunt-browserify'
+  grunt.loadNpmTasks 'grunt-coffeelint'
 
   grunt.registerTask 'default', ['concurrent:start']
